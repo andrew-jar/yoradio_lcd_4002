@@ -1,0 +1,40 @@
+Aby skorzystać ze wszystkich 40 znaków/lini, konieczne są kilka zmian w bibliotekach. Tylko 16 zostanie zastąpionych 40:
+w pliku yoradio-main/yoRadio/src/displays/displayLC1602.cpp :
+Kod
+void DspCore::initDisplay() {
+#ifdef LCD_I2C
+  init();
+  backlight();
+#else
+  #ifdef LCD_2004
+    begin(20, 4);
+  #else
+    begin(40, 2);
+
+
+Kod
+uint16_t DspCore::width(){
+#ifdef LCD_2004
+  return 20;
+#else
+  return 40;
+#endif
+
+
+W pliku yoradio-main-yoRadio-src-displays-displays-displayLC1602.h :
+Kod
+#ifdef LCD_I2C
+  #ifdef LCD_2004
+    #define DSP_INIT LiquidCrystal_I2C(SCREEN_ADDRESS, 20, 4, I2C_SDA, I2C_SCL)
+  #else
+    #define DSP_INIT LiquidCrystal_I2C(SCREEN_ADDRESS, 40, 2, I2C_SDA, I2C_SCL)
+  #endif
+
+
+A następnie ponownie w pliku yoradio-main-yoRadio-src-display-confplay-LCD1602conf.h :
+Kod
+#define DSP_WIDTH       40
+#define TFT_FRAMEWDT    0
+#define MAX_WIDTH       40
+#define PLMITEMS        2
+
